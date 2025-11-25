@@ -1,4 +1,4 @@
-# 📘  AUCA System Access Policy (PL/SQL Triggers and Packages Exercises)
+# 📘  System Access Policy (PL/SQL Triggers and Packages Exercises)
 
 ## 🔹 Overview
 
