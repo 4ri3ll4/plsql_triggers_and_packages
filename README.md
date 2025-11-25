@@ -1,4 +1,8 @@
-# 📘  System Access Policy (PL/SQL Triggers and Packages Exercises)
+# 📘  AUCA System Access Policy (PL/SQL Triggers and Packages Exercises)
+
+## NAMES:
+- RUREBWAYIRE AMPOZE Ariella (27640)
+- Montell Edmond Reeves (27259)
 
 ## 🔹 Overview
 
