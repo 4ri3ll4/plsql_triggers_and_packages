@@ -87,7 +87,7 @@ recording:
 ### ✔ 1. Testing Trigger 1 (Restriction)
 
 ``` sql
-INSERT INTO your_table (id, data)
+INSERT INTO recording_table (id, data)
 VALUES (999, 'Test attempt');
 ```
 
