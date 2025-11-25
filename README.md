@@ -105,3 +105,85 @@ Expected result: a new row showing the username, action, date, and
 description.
 
 ------------------------------------------------------------------------
+
+CREATE OR REPLACE PACKAGE hr_salary_pkg IS
+
+    -- Calculates RSSB tax (3% of salary)
+    FUNCTION calculate_rssb_tax(p_salary NUMBER) RETURN NUMBER;
+
+    -- Returns net salary after RSSB deduction
+    FUNCTION get_net_salary(p_salary NUMBER) RETURN NUMBER;
+
+    -- Updates employee salary using dynamic SQL
+    PROCEDURE update_employee_salary_dyn(
+        p_emp_id NUMBER,
+        p_new_salary NUMBER
+    );
+
+    -- Demonstrates USER vs CURRENT_USER security context
+    PROCEDURE show_security_context;
+
+END hr_salary_pkg;
+/
+-----------------------------------------------------------------------
+CREATE OR REPLACE PACKAGE BODY hr_salary_pkg IS
+
+    ----------------------------------------------------------
+    -- FUNCTION: Calculate RSSB Tax (3%)
+    ----------------------------------------------------------
+    FUNCTION calculate_rssb_tax(p_salary NUMBER) RETURN NUMBER IS
+        v_tax NUMBER;
+    BEGIN
+        v_tax := p_salary * 0.03;
+        RETURN v_tax;
+    END calculate_rssb_tax;
+
+
+    ----------------------------------------------------------
+    -- FUNCTION: Get Net Salary
+    ----------------------------------------------------------
+    FUNCTION get_net_salary(p_salary NUMBER) RETURN NUMBER IS
+    BEGIN
+        RETURN p_salary - calculate_rssb_tax(p_salary);
+    END get_net_salary;
+
+
+    ----------------------------------------------------------
+    -- PROCEDURE: Update Employee Salary (Dynamic SQL)
+    ----------------------------------------------------------
+    PROCEDURE update_employee_salary_dyn(
+        p_emp_id NUMBER,
+        p_new_salary NUMBER
+    ) IS
+        v_sql VARCHAR2(500);
+    BEGIN
+        v_sql := 'UPDATE employees SET salary = :1 WHERE employee_id = :2';
+
+        EXECUTE IMMEDIATE v_sql USING p_new_salary, p_emp_id;
+
+        DBMS_OUTPUT.PUT_LINE('Salary updated dynamically for employee ID: ' || p_emp_id);
+    END update_employee_salary_dyn;
+
+
+    ----------------------------------------------------------
+    -- PROCEDURE: Security Context Demonstration
+    ----------------------------------------------------------
+    PROCEDURE show_security_context IS
+    BEGIN
+        /*
+            USER:
+                - The schema that owns the package.
+                - Represents the definer of the package.
+
+            CURRENT_USER:
+                - The account executing the package at runtime.
+                - Can differ from USER when invoker rights apply.
+        */
+
+        DBMS_OUTPUT.PUT_LINE('USER: ' || USER);
+        DBMS_OUTPUT.PUT_LINE('CURRENT_USER: ' || SYS_CONTEXT('USERENV','CURRENT_USER'));
+    END show_security_context;
+
+END hr_salary_pkg;
+/
+
